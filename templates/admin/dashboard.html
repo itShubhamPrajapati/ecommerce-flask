@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Modern Shop{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <h1 style="margin-bottom: 30px; color: #1f2937;">Admin Dashboard</h1>
+    
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <i class="fas fa-shopping-cart" style="font-size: 36px; color: #3b82f6;"></i>
+            <div class="stat-number">{{ total_orders }}</div>
+            <div class="stat-label">Total Orders</div>
+        </div>
+        
+        <div class="stat-card">
+            <i class="fas fa-box" style="font-size: 36px; color: #10b981;"></i>
+            <div class="stat-number">{{ total_products }}</div>
+            <div class="stat-label">Products</div>
+        </div>
+        
+        <div class="stat-card">
+            <i class="fas fa-users" style="font-size: 36px; color: #8b5cf6;"></i>
+            <div class="stat-number">{{ total_users }}</div>
+            <div class="stat-label">Users</div>
+        </div>
+        
+        <div class="stat-card">
+            <i class="fas fa-rupee-sign" style="font-size: 36px; color: #f59e0b;"></i>
+            <div class="stat-number">
+                ₹{{ recent_orders|sum(attribute='total')|round|int }}
+            </div>
+            <div class="stat-label">Revenue</div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div style="display: flex; gap: 15px; margin-bottom: 40px; flex-wrap: wrap;">
+        <a href="/admin/products" class="btn btn-primary">
+            <i class="fas fa-box"></i> Manage Products
+        </a>
+        <a href="/admin/orders" class="btn btn-secondary">
+            <i class="fas fa-shopping-cart"></i> Manage Orders
+        </a>
+        <a href="/admin/add-product" class="btn btn-success">
+            <i class="fas fa-plus"></i> Add New Product
+        </a>
+    </div>
+    
+    <!-- Recent Orders -->
+    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <h2 style="margin-bottom: 25px; color: #1f2937;">Recent Orders</h2>
+        
+        {% if recent_orders %}
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #f9fafb;">
+                        <th style="padding: 12px 15px; text-align: left; font-weight: 600; color: #4b5563;">Order ID</th>
+                        <th style="padding: 12px 15px; text-align: left; font-weight: 600; color: #4b5563;">Customer</th>
+                        <th style="padding: 12px 15px; text-align: left; font-weight: 600; color: #4b5563;">Date</th>
+                        <th style="padding: 12px 15px; text-align: left; font-weight: 600; color: #4b5563;">Amount</th>
+                        <th style="padding: 12px 15px; text-align: left; font-weight: 600; color: #4b5563;">Status</th>
+                        <th style="padding: 12px 15px; text-align: left; font-weight: 600; color: #4b5563;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in recent_orders %}
+                    <tr style="border-bottom: 1px solid #e5e7eb;">
+                        <td style="padding: 12px 15px;">{{ order.order_id }}</td>
+                        <td style="padding: 12px 15px;">{{ order.user_email }}</td>
+                        <td style="padding: 12px 15px;">{{ order.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td style="padding: 12px 15px; font-weight: 600; color: #3b82f6;">₹{{ order.total }}</td>
+                        <td style="padding: 12px 15px;">
+                            <span style="background: 
+                                {% if order.status == 'Paid' %}#10b981
+                                {% elif order.status == 'Pending' %}#f59e0b
+                                {% else %}#6b7280{% endif %};
+                                color: white; padding: 5px 15px; border-radius: 20px; font-size: 14px;">
+                                {{ order.status }}
+                            </span>
+                        </td>
+                        <td style="padding: 12px 15px;">
+                            <a href="/order/{{ order.order_id }}" class="btn btn-sm btn-outline">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 40px 20px;">
+            <i class="fas fa-shopping-cart" style="font-size: 60px; color: #d1d5db; margin-bottom: 20px;"></i>
+            <h3 style="margin-bottom: 10px; color: #4b5563;">No orders yet</h3>
+            <p style="color: #6b7280;">New orders will appear here.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

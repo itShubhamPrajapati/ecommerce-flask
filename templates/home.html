@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Modern Shop - Home{% endblock %}
+
+{% block content %}
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Discover Amazing Products</h1>
+            <p>Shop the latest trends in electronics, fashion, home appliances, and more. Free shipping on orders over ₹999.</p>
+            <a href="/products" class="btn btn-primary" style="font-size: 18px; padding: 15px 30px;">
+                <i class="fas fa-shopping-bag"></i> Shop Now
+            </a>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <div class="container">
+        <h2 class="section-title">Featured Products</h2>
+        <div class="products-grid">
+            {% for product in featured %}
+            <div class="product-card">
+                {% if product.discount_price %}
+                <div class="product-badge">SALE</div>
+                {% endif %}
+                <div class="product-image">
+                    <img src="{{ product.image }}" alt="{{ product.name }}">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">{{ product.name }}</h3>
+                    <div class="product-price">
+                        <span class="current-price">₹{{ product.discount_price if product.discount_price else product.price }}</span>
+                        {% if product.discount_price %}
+                        <span class="old-price">₹{{ product.price }}</span>
+                        <span class="discount">
+                            {{ ((1 - product.discount_price/product.price) * 100)|round|int }}% OFF
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="product-rating" data-rating="{{ product.rating }}">
+                        <!-- Stars will be added by JavaScript -->
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <a href="/product/{{ product.id }}" class="btn btn-outline btn-sm" style="flex: 1;">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                        <button class="btn btn-primary btn-sm add-to-cart" data-product-id="{{ product.id }}" style="flex: 1;">
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- New Arrivals -->
+    <div class="container">
+        <h2 class="section-title">New Arrivals</h2>
+        <div class="products-grid">
+            {% for product in products %}
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="{{ product.image }}" alt="{{ product.name }}">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">{{ product.name }}</h3>
+                    <div class="product-price">
+                        <span class="current-price">₹{{ product.discount_price if product.discount_price else product.price }}</span>
+                        {% if product.discount_price %}
+                        <span class="old-price">₹{{ product.price }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="product-rating" data-rating="{{ product.rating }}">
+                        <!-- Stars will be added by JavaScript -->
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <a href="/product/{{ product.id }}" class="btn btn-outline btn-sm" style="flex: 1;">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                        <button class="btn btn-primary btn-sm add-to-cart" data-product-id="{{ product.id }}" style="flex: 1;">
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="container" style="margin: 50px auto; padding: 40px 0;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+            <div style="text-align: center; padding: 30px; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <i class="fas fa-shipping-fast" style="font-size: 48px; color: #3b82f6; margin-bottom: 20px;"></i>
+                <h3 style="margin-bottom: 10px;">Free Shipping</h3>
+                <p style="color: #666;">Free delivery on orders above ₹999</p>
+            </div>
+            
+            <div style="text-align: center; padding: 30px; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <i class="fas fa-shield-alt" style="font-size: 48px; color: #3b82f6; margin-bottom: 20px;"></i>
+                <h3 style="margin-bottom: 10px;">Secure Payment</h3>
+                <p style="color: #666;">100% secure and encrypted payments</p>
+            </div>
+            
+            <div style="text-align: center; padding: 30px; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <i class="fas fa-headset" style="font-size: 48px; color: #3b82f6; margin-bottom: 20px;"></i>
+                <h3 style="margin-bottom: 10px;">24/7 Support</h3>
+                <p style="color: #666;">Round-the-clock customer support</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

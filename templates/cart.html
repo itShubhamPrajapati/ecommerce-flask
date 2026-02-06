@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Shopping Cart - Modern Shop{% endblock %}
+
+{% block content %}
+<div class="cart-container">
+    <h1 style="margin-bottom: 30px; color: #1f2937;">Your Shopping Cart</h1>
+    
+    {% if items %}
+        {% for item in items %}
+        <div class="cart-item">
+            <div class="cart-item-image">
+                <img src="{{ item.image }}" alt="{{ item.name }}">
+            </div>
+            
+            <div class="cart-item-details">
+                <h3 class="cart-item-title">{{ item.name }}</h3>
+                <div class="cart-item-price">₹{{ item.price }}</div>
+            </div>
+            
+            <div class="cart-quantity">
+                <button class="quantity-btn" onclick="updateCart('{{ item.id }}', 'decrease')">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <span class="quantity">{{ item.quantity }}</span>
+                <button class="quantity-btn" onclick="updateCart('{{ item.id }}', 'increase')">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <button class="remove-btn" onclick="removeFromCart('{{ item.id }}')" style="margin-left: 20px;">
+                    <i class="fas fa-trash"></i> Remove
+                </button>
+            </div>
+            
+            <div style="font-size: 20px; font-weight: bold; color: #3b82f6;">
+                ₹{{ item.total }}
+            </div>
+        </div>
+        {% endfor %}
+        
+        <div class="cart-summary">
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span>₹{{ total }}</span>
+            </div>
+            <div class="summary-row">
+                <span>Shipping</span>
+                <span style="color: #10b981;">FREE</span>
+            </div>
+            <div class="summary-row">
+                <span>Tax (18%)</span>
+                <span>₹{{ (total * 0.18)|round(2) }}</span>
+            </div>
+            <div class="summary-row">
+                <span>Total</span>
+                <span>₹{{ (total * 1.18)|round(2) }}</span>
+            </div>
+            
+            <div style="display: flex; gap: 15px; margin-top: 30px;">
+                <a href="/products" class="btn btn-outline" style="flex: 1; text-align: center;">
+                    <i class="fas fa-arrow-left"></i> Continue Shopping
+                </a>
+                {% if session.get('user_id') %}
+                <a href="/checkout" class="btn btn-primary" style="flex: 1; text-align: center;">
+                    <i class="fas fa-lock"></i> Proceed to Checkout
+                </a>
+                {% else %}
+                <a href="/login?next=/checkout" class="btn btn-primary" style="flex: 1; text-align: center;">
+                    <i class="fas fa-sign-in-alt"></i> Login to Checkout
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 50px 20px;">
+            <i class="fas fa-shopping-cart" style="font-size: 80px; color: #d1d5db; margin-bottom: 20px;"></i>
+            <h2 style="margin-bottom: 15px; color: #4b5563;">Your cart is empty</h2>
+            <p style="color: #6b7280; margin-bottom: 30px;">Looks like you haven't added any items to your cart yet.</p>
+            <a href="/products" class="btn btn-primary" style="padding: 15px 30px; font-size: 16px;">
+                <i class="fas fa-shopping-bag"></i> Start Shopping
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

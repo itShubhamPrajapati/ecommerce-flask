@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - Modern Shop{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 100px; margin-bottom: 50px;">
+    <h1 style="margin-bottom: 30px; color: #1f2937;">My Profile</h1>
+    
+    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+        <!-- Profile Info -->
+        <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <div style="width: 100px; height: 100px; background: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 36px; color: white;">
+                    {{ user.name[0]|upper }}
+                </div>
+                <h3 style="margin-bottom: 5px;">{{ user.name }}</h3>
+                <p style="color: #6b7280;">{{ user.email }}</p>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <div style="font-weight: 600; color: #1f2937; margin-bottom: 5px;">
+                    <i class="fas fa-phone" style="margin-right: 10px;"></i> Phone
+                </div>
+                <div style="color: #4b5563;">{{ user.phone or 'Not provided' }}</div>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <div style="font-weight: 600; color: #1f2937; margin-bottom: 5px;">
+                    <i class="fas fa-map-marker-alt" style="margin-right: 10px;"></i> Address
+                </div>
+                <div style="color: #4b5563;">{{ user.address or 'Not provided' }}</div>
+            </div>
+            
+            <div>
+                <div style="font-weight: 600; color: #1f2937; margin-bottom: 5px;">
+                    <i class="fas fa-calendar" style="margin-right: 10px;"></i> Member Since
+                </div>
+                <div style="color: #4b5563;">{{ user.created_at.strftime('%B %d, %Y') }}</div>
+            </div>
+        </div>
+        
+        <!-- Orders -->
+        <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h2 style="margin-bottom: 30px; color: #1f2937;">My Orders</h2>
+            
+            {% if orders %}
+                {% for order in orders %}
+                <div style="padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <div>
+                            <div style="font-weight: 600; color: #1f2937;">Order #{{ order.order_id }}</div>
+                            <div style="color: #6b7280; font-size: 14px;">{{ order.created_at.strftime('%B %d, %Y %I:%M %p') }}</div>
+                        </div>
+                        <div>
+                            <span style="background: 
+                                {% if order.status == 'Paid' %}#10b981
+                                {% elif order.status == 'Pending' %}#f59e0b
+                                {% else %}#6b7280{% endif %};
+                                color: white; padding: 5px 15px; border-radius: 20px; font-size: 14px;">
+                                {{ order.status }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="color: #4b5563;">
+                            {% set items = order.items|string|replace("'", '"')|safe %}
+                            {% if '[' in items %}
+                                {% set item_count = items|from_json|length %}
+                                {{ item_count }} item{% if item_count > 1 %}s{% endif %}
+                            {% else %}
+                                1 item
+                            {% endif %}
+                        </div>
+                        <div style="font-weight: bold; color: #3b82f6;">₹{{ order.total }}</div>
+                    </div>
+                    
+                    <a href="/order/{{ order.order_id }}" style="display: block; text-align: center; margin-top: 15px; padding: 10px; background: #f3f4f6; border-radius: 6px; text-decoration: none; color: #3b82f6; font-weight: 500;">
+                        <i class="fas fa-eye"></i> View Details
+                    </a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div style="text-align: center; padding: 40px 20px;">
+                    <i class="fas fa-box-open" style="font-size: 60px; color: #d1d5db; margin-bottom: 20px;"></i>
+                    <h3 style="margin-bottom: 10px; color: #4b5563;">No orders yet</h3>
+                    <p style="color: #6b7280; margin-bottom: 30px;">Start shopping to see your orders here!</p>
+                    <a href="/products" class="btn btn-primary">
+                        <i class="fas fa-shopping-bag"></i> Start Shopping
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

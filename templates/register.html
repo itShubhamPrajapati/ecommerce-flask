@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Modern Shop{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <h2>Create New Account</h2>
+    
+    <form method="POST" action="/register" id="register-form">
+        <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" name="name" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" name="email" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="tel" name="phone" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 16px;">
+            <i class="fas fa-user-plus"></i> Register
+        </button>
+    </form>
+    
+    <div style="text-align: center; margin-top: 20px;">
+        <p>Already have an account? <a href="/login">Login here</a></p>
+    </div>
+</div>
+
+<script>
+document.getElementById('register-form').addEventListener('submit', function(e) {
+    const password = document.querySelector('input[name="password"]').value;
+    if (password.length < 6) {
+        e.preventDefault();
+        alert('Password must be at least 6 characters long');
+        return false;
+    }
+    return true;
+});
+</script>
+{% endblock %}

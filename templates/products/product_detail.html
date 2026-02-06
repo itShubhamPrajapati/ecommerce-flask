@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - Modern Shop{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 100px; margin-bottom: 50px;">
+    <a href="/products" class="btn btn-outline" style="margin-bottom: 30px;">
+        <i class="fas fa-arrow-left"></i> Back to Products
+    </a>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <!-- Product Image -->
+        <div>
+            <img src="{{ product.image }}" alt="{{ product.name }}" 
+                 style="width: 100%; border-radius: 10px; object-fit: cover;">
+        </div>
+        
+        <!-- Product Details -->
+        <div>
+            <h1 style="margin-bottom: 15px; color: #1f2937;">{{ product.name }}</h1>
+            
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                <div class="product-rating" data-rating="{{ product.rating }}" style="font-size: 20px;"></div>
+                <span style="color: #6b7280;">({{ product.rating }}/5)</span>
+            </div>
+            
+            <div style="margin-bottom: 25px;">
+                <div style="font-size: 32px; font-weight: bold; color: #3b82f6; margin-bottom: 10px;">
+                    ₹{{ product.discount_price if product.discount_price else product.price }}
+                    {% if product.discount_price %}
+                    <span style="font-size: 20px; color: #6b7280; text-decoration: line-through; margin-left: 10px;">
+                        ₹{{ product.price }}
+                    </span>
+                    <span style="font-size: 16px; color: #10b981; margin-left: 10px;">
+                        {{ ((1 - product.discount_price/product.price) * 100)|round|int }}% OFF
+                    </span>
+                    {% endif %}
+                </div>
+                
+                {% if product.stock > 0 %}
+                <div style="color: #10b981; font-weight: 600;">
+                    <i class="fas fa-check-circle"></i> In Stock
+                    {% if product.stock < 10 %}
+                    <span style="color: #f59e0b;"> (Only {{ product.stock }} left!)</span>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div style="color: #ef4444; font-weight: 600;">
+                    <i class="fas fa-times-circle"></i> Out of Stock
+                </div>
+                {% endif %}
+            </div>
+            
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 10px; color: #1f2937;">Description</h3>
+                <p style="color: #4b5563; line-height: 1.6;">{{ product.description }}</p>
+            </div>
+            
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 10px; color: #1f2937;">Category</h3>
+                <span style="background: #e5e7eb; padding: 5px 15px; border-radius: 20px; font-size: 14px;">
+                    {{ product.category }}
+                </span>
+            </div>
+            
+            <div style="display: flex; gap: 15px;">
+                <button class="btn btn-primary add-to-cart" data-product-id="{{ product.id }}"
+                        style="flex: 2; padding: 15px; font-size: 16px;"
+                        {% if product.stock <= 0 %}disabled{% endif %}>
+                    <i class="fas fa-shopping-cart"></i> 
+                    {% if product.stock > 0 %}Add to Cart{% else %}Out of Stock{% endif %}
+                </button>
+                
+                <a href="/cart" class="btn btn-secondary" style="flex: 1; padding: 15px; font-size: 16px;">
+                    <i class="fas fa-bolt"></i> Buy Now
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Related Products -->
+    {% if related %}
+    <div style="margin-top: 60px;">
+        <h2 style="margin-bottom: 30px; color: #1f2937;">Related Products</h2>
+        <div class="products-grid">
+            {% for product in related %}
+            <div class="product-card">
+                {% if product.discount_price %}
+                <div class="product-badge">SALE</div>
+                {% endif %}
+                <div class="product-image">
+                    <img src="{{ product.image }}" alt="{{ product.name }}">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">{{ product.name }}</h3>
+                    <div class="product-price">
+                        <span class="current-price">₹{{ product.discount_price if product.discount_price else product.price }}</span>
+                        {% if product.discount_price %}
+                        <span class="old-price">₹{{ product.price }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="product-rating" data-rating="{{ product.rating }}">
+                        <!-- Stars will be added by JavaScript -->
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <a href="/product/{{ product.id }}" class="btn btn-outline btn-sm" style="flex: 1;">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                        <button class="btn btn-primary btn-sm add-to-cart" data-product-id="{{ product.id }}" style="flex: 1;">
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

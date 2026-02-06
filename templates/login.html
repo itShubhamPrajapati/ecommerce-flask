@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Modern Shop{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <h2>Login to Your Account</h2>
+    
+    <form method="POST" action="/login" id="login-form">
+        <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" name="email" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 16px;">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+    </form>
+    
+    <div style="text-align: center; margin-top: 20px;">
+        <p>Don't have an account? <a href="/register">Register here</a></p>
+    </div>
+    
+    <div style="margin-top: 30px; padding: 20px; background: #f0f9ff; border-radius: 8px;">
+        <h4 style="margin-bottom: 10px; color: #3b82f6;">Test Account:</h4>
+        <p style="margin: 5px 0;"><strong>Email:</strong> admin@shop.com</p>
+        <p style="margin: 5px 0;"><strong>Password:</strong> admin123</p>
+    </div>
+</div>
+
+<script>
+document.getElementById('login-form').addEventListener('submit', function(e) {
+    if (!validateForm('login-form')) {
+        e.preventDefault();
+        alert('Please fill in all required fields');
+    }
+});
+</script>
+{% endblock %}

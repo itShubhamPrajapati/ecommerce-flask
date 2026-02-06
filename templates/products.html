@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Products - Modern Shop{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 100px; margin-bottom: 50px;">
+    <h1 style="margin-bottom: 30px; color: #1f2937;">Our Products</h1>
+    
+    <!-- Search and Filter -->
+    <div style="display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;">
+        <input type="text" placeholder="Search products..." 
+               style="flex: 1; padding: 12px 15px; border: 2px solid #e5e7eb; border-radius: 8px; min-width: 200px;"
+               value="{{ search or '' }}"
+               onchange="location.href='/products?search=' + this.value">
+        
+        <select style="padding: 12px 15px; border: 2px solid #e5e7eb; border-radius: 8px; min-width: 150px;"
+                onchange="location.href='/products?category=' + this.value">
+            <option value="">All Categories</option>
+            {% for category in categories %}
+            <option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>
+                {{ category }}
+            </option>
+            {% endfor %}
+        </select>
+        
+        <a href="/products" class="btn btn-outline" style="padding: 12px 20px;">
+            <i class="fas fa-sync-alt"></i> Clear Filters
+        </a>
+    </div>
+    
+    <!-- Products Grid -->
+    {% if products %}
+    <div class="products-grid">
+        {% for product in products %}
+        <div class="product-card">
+            {% if product.discount_price %}
+            <div class="product-badge">SALE</div>
+            {% endif %}
+            <div class="product-image">
+                <img src="{{ product.image }}" alt="{{ product.name }}">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">{{ product.name }}</h3>
+                <div class="product-price">
+                    <span class="current-price">₹{{ product.discount_price if product.discount_price else product.price }}</span>
+                    {% if product.discount_price %}
+                    <span class="old-price">₹{{ product.price }}</span>
+                    <span class="discount">
+                        {{ ((1 - product.discount_price/product.price) * 100)|round|int }}% OFF
+                    </span>
+                    {% endif %}
+                </div>
+                <div class="product-rating" data-rating="{{ product.rating }}">
+                    <!-- Stars will be added by JavaScript -->
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <a href="/product/{{ product.id }}" class="btn btn-outline btn-sm" style="flex: 1;">
+                        <i class="fas fa-eye"></i> View
+                    </a>
+                    <button class="btn btn-primary btn-sm add-to-cart" data-product-id="{{ product.id }}" style="flex: 1;">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 50px 20px;">
+        <i class="fas fa-search" style="font-size: 80px; color: #d1d5db; margin-bottom: 20px;"></i>
+        <h2 style="margin-bottom: 15px; color: #4b5563;">No products found</h2>
+        <p style="color: #6b7280; margin-bottom: 30px;">Try different search terms or clear filters.</p>
+        <a href="/products" class="btn btn-primary" style="padding: 15px 30px; font-size: 16px;">
+            <i class="fas fa-shopping-bag"></i> View All Products
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
